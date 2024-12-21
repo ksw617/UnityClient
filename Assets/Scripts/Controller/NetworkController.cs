@@ -7,12 +7,20 @@ using ClientCSharp.Network;
 using ClientCSharp.Packet;
 
 
-public class HelloWorld : MonoBehaviour
+public class NetworkController
 {
     ServerSession session = new();
 
-    void Start()
+    public void Send(IMessage packet)
     {
+        session.Send(packet);
+    }
+
+    public void Init()
+    {
+        //string host = Dns.GetHostName();
+        //IPHostEntry ipHost = Dns.GetHostEntry(host);
+        //IPAddress ipAddr = ipHost.AddressList[0];
         IPAddress ipAddr = IPAddress.Parse("127.0.0.1");
         IPEndPoint endPoint = new IPEndPoint(ipAddr, 27015);
 
@@ -22,7 +30,7 @@ public class HelloWorld : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    public void Update()
     {
         List<PacketMessage> list = PacketQueue.Instance.PopAll();
         foreach (PacketMessage packet in list)

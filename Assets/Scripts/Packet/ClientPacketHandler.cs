@@ -2,6 +2,7 @@
 using Google.Protobuf;
 using Protocol;
 using System;
+using UnityEngine.SceneManagement;
 
 namespace ClientCSharp.Packet
 {
@@ -46,7 +47,12 @@ namespace ClientCSharp.Packet
 
         public static void Handle_LoginResponse(PacketSession session, IMessage packet)
         {
-            Console.WriteLine("Handle_LoginResponse");
+            LoginResponse loginResponse = packet as LoginResponse;
+
+            if (loginResponse.Success)
+            {
+                GameController.Instance.Debug("test");
+            }
         }
 
         public static void Handle_EnterGameResponse(PacketSession session, IMessage packet)
