@@ -2,9 +2,10 @@ using Google.Protobuf;
 using System.Collections.Generic;
 using System;
 using System.Net;
-using UnityClient.Network;
-using UnityClient.Packet;
 using UnityEngine;
+using ClientCSharp.Network;
+using ClientCSharp.Packet;
+
 
 public class HelloWorld : MonoBehaviour
 {
@@ -26,9 +27,10 @@ public class HelloWorld : MonoBehaviour
         List<PacketMessage> list = PacketQueue.Instance.PopAll();
         foreach (PacketMessage packet in list)
         {
-            Action<PacketSession, IMessage> handler = ClientPacketManager.Instance.GetPacketHandler(packet.Id);
+            Action<PacketSession, IMessage> handler = ClientPacketHandler.Instance.GetPacketHandler(packet.Id);
             if (handler != null && packet.Message != null)
                 handler.Invoke(session, packet.Message);
         }
     }
+
 }

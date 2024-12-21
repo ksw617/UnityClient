@@ -1,7 +1,7 @@
 ﻿using Google.Protobuf;
 using System.Collections.Generic;
 
-namespace UnityClient.Packet
+namespace ClientCSharp.Packet
 {
     public class PacketMessage
     {
@@ -13,7 +13,7 @@ namespace UnityClient.Packet
     {
         public static PacketQueue Instance { get; } = new PacketQueue();
 
-        readonly Queue<PacketMessage> packetQueue = new ();
+        readonly Queue<PacketMessage> packetQueue = new();
         private readonly object lockObj = new();
 
         public void Push(ushort id, IMessage packet)

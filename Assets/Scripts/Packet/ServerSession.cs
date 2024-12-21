@@ -1,20 +1,17 @@
-﻿using System.Diagnostics;
+﻿using ClientCSharp.Network;
+using Google.Protobuf;
+using Protocol;
+using System;
 using System.Net;
 
-using UnityClient.Packet;
-
-using Google.Protobuf;
-using Google.Protobuf.Protocol;
-using System;
-
-namespace UnityClient.Network
+namespace ClientCSharp.Packet
 {
-    public class ServerSession : PacketSession
+    internal class ServerSession : PacketSession
     {
         public void Send(IMessage packet)
         {
             string msgName = packet.Descriptor.Name.Replace("_", string.Empty);
-            PacketID packetID = (PacketID)Enum.Parse(typeof(PacketID), msgName);
+            PacketID packetID = (PacketID)Enum.Parse(typeof(PacketID), msgName, true);
             ushort size = (ushort)packet.CalculateSize();
             byte[] sendBuffer = new byte[size + 4];
             Array.Copy(BitConverter.GetBytes((ushort)(size + 4)), 0, sendBuffer, 0, sizeof(ushort));
@@ -26,8 +23,16 @@ namespace UnityClient.Network
         public override void OnConnected(EndPoint endPoint)
         {
             Console.WriteLine("OnConnected");
-            C_Login packet = new C_Login();
-            Send(packet);
+
+            LoginRequest packet = new LoginRequest
+            {
+                UserId = "player1",
+                Token = "debug-token-12345"
+            };
+
+            // C++와 동일하게 PacketHandler를 통해 직렬화
+            var sendBuffer = ClientPacketHandler.MakeSendBuffer(packet);
+            Send(sendBuffer);
         }
 
         public override void OnDisconnected(EndPoint endPoint)
@@ -38,12 +43,13 @@ namespace UnityClient.Network
         public override void OnRecvPacket(ArraySegment<byte> buffer)
         {
             Console.WriteLine("OnRecvPacket");
-            ClientPacketManager.Instance.OnRecvPacket(this, buffer);
+            ClientPacketHandler.Instance.HandlePacket(this, buffer);
         }
 
         public override void OnSend(int numOfBytes)
         {
             Console.WriteLine("OnSend");
         }
+
     }
 }
