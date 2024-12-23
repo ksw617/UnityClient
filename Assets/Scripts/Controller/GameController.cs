@@ -39,9 +39,32 @@ public class GameController : MonoBehaviour
         }
     }
 
-    public void Debug(string msg)
+    public void LoadScene(string sceneName)
     {
-        UnityEngine.Debug.Log(msg);
-        SceneManager.LoadScene("LobbyScene");
+        Debug.Log($"Trying to load scene: {sceneName}");
+
+        // 씬 존재 여부 및 인덱스 확인
+        Scene scene = SceneManager.GetSceneByName(sceneName);
+        Debug.Log($"LobbyScene index: {scene.buildIndex}");
+
+        if (Application.CanStreamedLevelBeLoaded(sceneName))
+        {
+            SceneManager.LoadSceneAsync(sceneName);
+            Debug.Log($"{sceneName} loaded successfully.");
+        }
+        else
+        {
+            Debug.LogError($"Scene '{sceneName}' cannot be loaded. Check Build Settings or Scene Name.");
+        }
+    }
+
+    public void LogMessage(string message)
+    {
+        Debug.Log(message);
+    }
+
+    public void LogError(string message)
+    {
+        Debug.LogError(message);
     }
 }
