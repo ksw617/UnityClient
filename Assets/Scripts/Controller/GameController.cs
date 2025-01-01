@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 public class GameController : MonoBehaviour
@@ -39,23 +40,15 @@ public class GameController : MonoBehaviour
         }
     }
 
-    public void LoadScene(string sceneName)
+    public IEnumerator SomeCoroutine(string sceneName)
     {
         Debug.Log($"Trying to load scene: {sceneName}");
 
         // 씬 존재 여부 및 인덱스 확인
-        Scene scene = SceneManager.GetSceneByName(sceneName);
-        Debug.Log($"LobbyScene index: {scene.buildIndex}");
-
-        if (Application.CanStreamedLevelBeLoaded(sceneName))
-        {
-            SceneManager.LoadSceneAsync(sceneName);
-            Debug.Log($"{sceneName} loaded successfully.");
-        }
-        else
-        {
-            Debug.LogError($"Scene '{sceneName}' cannot be loaded. Check Build Settings or Scene Name.");
-        }
+        SceneManager.LoadScene(sceneName);
+       
+        // 코루틴 로직
+        yield return null;
     }
 
     public void LogMessage(string message)

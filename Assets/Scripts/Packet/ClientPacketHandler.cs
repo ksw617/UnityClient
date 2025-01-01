@@ -51,16 +51,8 @@ namespace ClientCSharp.Packet
 
             if (loginResponse.Success)
             {
-                GameController.Instance.LogMessage("Login successful. Attempting to load scene...");
 
-                if (GameController.Instance != null)
-                {
-                    GameController.Instance.LoadScene("LobbyScene");
-                }
-                else
-                {
-                    GameController.Instance.LogError("GameController.Instance is null. Scene cannot be loaded.");
-                }
+                GameController.Instance.StartCoroutine(GameController.Instance.SomeCoroutine("LobbyScene"));
             }
         }
 

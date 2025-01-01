@@ -44,14 +44,17 @@ namespace ClientCSharp.Network
             T packet = new();
             packet.MergeFrom(buffer.Array, buffer.Offset + 4, buffer.Count - 4); // 헤더(4바이트)를 제외하고 데이터 병합
 
-            // 패킷 ID에 해당하는 핸들러를 찾아서 실행
-            if (handler.TryGetValue(id, out var action))
-            {
-                action.Invoke(session, packet);
-            }
+            // 패킷 ID에 해당하는 핸들러를 찾아서 실행시지 않고
+            //if (handler.TryGetValue(id, out var action))
+            //{
+            //    action.Invoke(session, packet);
+            //}
+
+            //PacketQueue에 담기만
+            PacketQueue.Instance.Push(id, packet);
         }
 
-        public Action<PacketSession, IMessage>? GetPacketHandler(ushort id)
+        public Action<PacketSession, IMessage> GetPacketHandler(ushort id)
         {
             if (handler.TryGetValue(id, out var action))
                 return action;
