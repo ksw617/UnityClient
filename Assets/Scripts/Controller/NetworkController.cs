@@ -11,6 +11,7 @@ public class NetworkController
 {
     ServerSession session = new();
 
+    //사용하기 편하기 위해 한번 감쌈
     public void Send(IMessage packet)
     {
         session.Send(packet);
@@ -26,6 +27,9 @@ public class NetworkController
 
         ClientService service = new ClientService();
         service.Connect(endPoint, () => { return session; }, 1);
+
+        //유니티 메인 스레드에서 호출 할수 있게 만듬
+        ClientPacketHandler.Instance.UnityThreadHandler = (session, id, msg) => { PacketQueue.Instance.Push(id, msg); };
 
     }
 

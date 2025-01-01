@@ -1,5 +1,4 @@
-﻿using ClientCSharp.Packet;
-using Google.Protobuf;
+﻿using Google.Protobuf;
 using System;
 using System.Collections.Generic;
 
@@ -12,6 +11,9 @@ namespace ClientCSharp.Network
 
         // 수신된 패킷 처리 메서드를 저장하는 맵
         protected Dictionary<ushort, Action<ushort, PacketSession, ArraySegment<byte>>> onRecv = new();
+
+        //Unity 메인 스레드 전용
+        public Action<PacketSession, ushort, IMessage> UnityThreadHandler { get; set; }
 
         // 생성자: 초기화 메서드 호출
         protected PacketHandler()
@@ -44,14 +46,20 @@ namespace ClientCSharp.Network
             T packet = new();
             packet.MergeFrom(buffer.Array, buffer.Offset + 4, buffer.Count - 4); // 헤더(4바이트)를 제외하고 데이터 병합
 
-            // 패킷 ID에 해당하는 핸들러를 찾아서 실행시지 않고
-            //if (handler.TryGetValue(id, out var action))
-            //{
-            //    action.Invoke(session, packet);
-            //}
 
-            //PacketQueue에 담기만
-            PacketQueue.Instance.Push(id, packet);
+            //Unity 였을 경우
+            if (UnityThreadHandler != null)
+            {
+                UnityThreadHandler.Invoke(session, id, packet);
+            }
+            else //아닐 경우
+            {
+                // 패킷 ID에 해당하는 핸들러를 찾아서 실행
+                if (handler.TryGetValue(id, out var action))
+                {
+                    action.Invoke(session, packet);
+                }
+            }
         }
 
         public Action<PacketSession, IMessage> GetPacketHandler(ushort id)

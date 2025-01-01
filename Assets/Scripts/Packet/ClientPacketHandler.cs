@@ -2,7 +2,7 @@
 using Google.Protobuf;
 using Protocol;
 using System;
-using UnityEngine.SceneManagement;
+
 
 namespace ClientCSharp.Packet
 {
@@ -59,9 +59,9 @@ namespace ClientCSharp.Packet
                 // (2) EnterGameRequest 자동 전송
                 EnterGameRequest enterGameRequest = new EnterGameRequest
                 {
-                    ActorId = 12345 // 실제 Actor ID
+                    ActorId = 0 // 실제 Actor ID
                 };
-                session.Send(enterGameRequest);
+                //session.Send(enterGameRequest);
             }
             else
             {

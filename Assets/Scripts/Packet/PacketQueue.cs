@@ -6,7 +6,7 @@ namespace ClientCSharp.Packet
     public class PacketMessage
     {
         public ushort Id { get; set; }
-        public IMessage? Message { get; set; }
+        public IMessage Message { get; set; }
     }
 
     public class PacketQueue
@@ -24,7 +24,7 @@ namespace ClientCSharp.Packet
             }
         }
 
-        public PacketMessage? Pop()
+        public PacketMessage Pop()
         {
             lock (lockObj)
             {
