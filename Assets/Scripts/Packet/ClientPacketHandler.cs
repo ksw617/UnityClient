@@ -51,8 +51,23 @@ namespace ClientCSharp.Packet
 
             if (loginResponse.Success)
             {
+                Console.WriteLine("로그인 성공!");
 
-                GameController.Instance.StartCoroutine(GameController.Instance.SomeCoroutine("LobbyScene"));
+                // (1) 씬 전환 예시 (Unity)
+                // SceneManager.LoadScene("LobbyScene");
+
+                // (2) EnterGameRequest 자동 전송
+                EnterGameRequest enterGameRequest = new EnterGameRequest
+                {
+                    ActorId = 12345 // 실제 Actor ID
+                };
+                session.Send(enterGameRequest);
+            }
+            else
+            {
+                // 로그인 실패 시 처리
+                Console.WriteLine($"로그인 실패: {loginResponse.ErrorMessage}");
+                // UI 메시지 표시, 재시도 로직 등
             }
         }
 
